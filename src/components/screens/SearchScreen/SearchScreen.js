@@ -4,20 +4,74 @@ import {
     Text,
     Button,
     VStack,
-    SimpleGrid
+    SimpleGrid,
+    Box,
+    HStack,
+    AspectRatio,
+    Image,
+    Square,
+    Avatar,
+    Spinner
 } from '@chakra-ui/react';
 import {InputGroup, InputRightElement} from '@chakra-ui/input';
-import {Search2Icon} from '@chakra-ui/icons';
-import {useContext} from 'react';
+import {ChevronRightIcon, Search2Icon} from '@chakra-ui/icons';
+import {useContext, useEffect, useState} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';
+import {useThrottle, useThrottleFn} from 'react-use';
+import {useHistory} from 'react-router';
+
+function ArtistRow({ artist }) {
+    const {
+        id,
+        images,
+        name
+    } = artist;
+
+    const history = useHistory();
+
+    return (
+        <Box borderRadius={'5px'} bg={'gray.700'} boxShadow={'dark-lg'} overflow='hidden' mb={2} onClick={() => {
+            history.push(`/artist/${id}`);
+        }}
+             cursor={'pointer'}
+        >
+            <HStack p={0} align={'center'}>
+                <Avatar src={images.length > 0 ? images[0].url : null} name={name} borderRadius={0} size={'lg'}/>
+
+                <HStack p={2} align={'center'}>
+                    <Text color={'gray.300'}>{name} <ChevronRightIcon /></Text>
+                </HStack>
+            </HStack>
+        </Box>
+    )
+}
 
 function SearchScreen() {
     const {
         startLogin,
         userData,
         loggedIn,
-        logout
+        logout,
+        search
     } = useContext(SpotifyContext);
+
+    const [value, setValue] = useState("");
+    const throttledValue = useThrottle(value, 1000);
+    const [loading, setLoading] = useState(false);
+    const [searchResults, setSearchResults] = useState(null);
+    const doSearch = async () => {
+        setLoading(true);
+        const searchResult = await search(value);
+        setSearchResults(searchResult);
+        setLoading(false);
+    }
+    useEffect(() => {
+        if (throttledValue && throttledValue.length > 0) {
+            doSearch(throttledValue);
+        } else {
+            setSearchResults(null);
+        }
+    }, [throttledValue])
 
     return (
         <>
@@ -42,9 +96,42 @@ function SearchScreen() {
             {loggedIn && (
                 <>
                     <Heading mt={4} size="md" color="gray.200">Search for an Artist...</Heading>
-                    <InputGroup size="lg">
-                        <Input size="lg" mt={4} mb={4} placeholder="Rick Astley" borderWidth={2} borderColor="gray.500"/>
-                    </InputGroup>
+                    <form onSubmit={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        doSearch();
+                    }}>
+                        <InputGroup size="lg" mt={4} mb={4}  boxShadow={'dark-lg'}>
+                            <Input placeholder="Rick Astley" borderWidth={2} borderColor="gray.500"
+                                   value={value}
+                                   onChange={(event) => setValue(event.target.value)} />
+                            {searchResults && (
+                                <InputRightElement width="8rem">
+                                    <Button h="1.75rem" size="sm" onClick={() => {
+                                        setValue("");
+                                        setSearchResults(null);
+                                    }}>
+                                        Clear Results
+                                    </Button>
+                                </InputRightElement>
+                            )}
+                        </InputGroup>
+                    </form>
+                    {searchResults && (
+                        <HStack ml={5} mb={4} >
+                            {loading && (
+                                <Spinner size={'sm'} mr={0} color={'gray.500'}/>
+                            )}
+                            <Text align="left" color={'gray.500'}>
+                                {searchResults.artists.items.length} artist{searchResults.artists.items.length > 1 ? 's' : ''} found
+                            </Text>
+                        </HStack>
+                    )}
+                    <VStack align="stretch">
+                        {searchResults && searchResults.artists.items.map((artist) => (
+                            <ArtistRow artist={artist} />
+                        ))}
+                    </VStack>
                 </>
             )}
         </>

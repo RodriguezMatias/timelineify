@@ -7,7 +7,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background-color: #1A202C;
     color: rgba(255, 255, 255, 0.92);
-    overflow: auto;
+    overflow-y: scroll;
 }
 
 noscript {

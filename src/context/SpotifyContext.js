@@ -46,10 +46,13 @@ export function SpotifyContextProvider({ children }) {
             headers
         });
 
-        const userDataResponse = await connection.current.get('/v1/me');
-        if (userDataResponse.status === 200) {
+        try {
+            const userDataResponse = await connection.current.get('/v1/me');
             setLoginFailed(false);
             setUserData(userDataResponse.data);
+            history.push('/');
+        } catch (e) {
+            setLoginFailed(true);
             history.push('/');
         }
     }
@@ -59,6 +62,15 @@ export function SpotifyContextProvider({ children }) {
         connection.current = null;
         setUserData(null);
         setAccessToken(null);
+    }
+
+    const search = async (searchTerm) => {
+        try {
+            const searchResponse = await connection.current.get(`/v1/search?q=${searchTerm}&type=artist`);
+            return searchResponse.data;
+        } catch (e) {
+            return null;
+        }
     }
 
     const loggedIn = userData !== null;
@@ -71,7 +83,8 @@ export function SpotifyContextProvider({ children }) {
             loginFailed,
             setLoginFailed,
             loggedIn,
-            logout
+            logout,
+            search
         }}>
             { children }
         </StompClientContext.Provider>
