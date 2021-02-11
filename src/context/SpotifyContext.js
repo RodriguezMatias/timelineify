@@ -9,7 +9,7 @@ export default StompClientContext;
 
 export function SpotifyContextProvider({ children }) {
     const clientId = "7db92e56e9244449b3eebc16f40ad031";
-    const redirectUri = `http://localhost:3000/auth`;
+    const redirectUri = `${window.location.protocol}//${window.location.host}/auth`;
     const scope = "playlist-modify-public";
     const authRequestUuid = null;
     const history = useHistory();
