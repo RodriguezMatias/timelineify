@@ -45,7 +45,7 @@ function RootScreen() {
                             <Route exact path="/about">
                                 <AboutScreen />
                             </Route>
-                            <Route path="/artist">
+                            <Route path="/artist/:id">
                                 <ArtistScreen />
                             </Route>
                             <Route>

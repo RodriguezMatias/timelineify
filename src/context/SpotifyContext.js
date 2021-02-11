@@ -18,6 +18,7 @@ export function SpotifyContextProvider({ children }) {
     const [accessToken, setAccessToken] = useState(null);
     const [userData, setUserData] = useState(null);
     const [loginFailed, setLoginFailed] = useState(false);
+    const [sessionExpired, setSessionExpired] = useState(false);
 
     const startLogin = () => {
         console.log('Starting spotify login...');
@@ -64,11 +65,35 @@ export function SpotifyContextProvider({ children }) {
         setAccessToken(null);
     }
 
+    const checkSession = async () => {
+        try {
+            const userDataResponse = await connection.current.get('/v1/me');
+        } catch (e) {
+            expireSession();
+        }
+    }
+
+    const expireSession = async () => {
+        setSessionExpired(true);
+        logout();
+    }
+
     const search = async (searchTerm) => {
         try {
             const searchResponse = await connection.current.get(`/v1/search?q=${searchTerm}&type=artist`);
             return searchResponse.data;
         } catch (e) {
+            checkSession();
+            return null;
+        }
+    }
+
+    const getArtist = async (artistId) => {
+        try {
+            const artistResponse = await connection.current.get(`/v1/artists/${artistId}`);
+            return artistResponse.data;
+        } catch (e) {
+            checkSession();
             return null;
         }
     }
@@ -84,7 +109,12 @@ export function SpotifyContextProvider({ children }) {
             setLoginFailed,
             loggedIn,
             logout,
-            search
+            search,
+            getArtist,
+            sessionExpired,
+            setSessionExpired,
+            expireSession,
+            checkSession
         }}>
             { children }
         </StompClientContext.Provider>
