@@ -1,8 +1,7 @@
 import {
     Heading,
-    Spinner,
     HStack,
-    Text, Avatar, Box,
+    Avatar, Box,
     VStack,
     Button,
     Spacer,
@@ -11,7 +10,7 @@ import {
 import {useContext, useEffect, useState} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';
 import {useHistory, useParams} from 'react-router';
-import {ChevronLeftIcon, ChevronRightIcon} from '@chakra-ui/icons';
+import {ChevronLeftIcon} from '@chakra-ui/icons';
 
 function ArtistScreen() {
     const { id } = useParams();
@@ -24,7 +23,7 @@ function ArtistScreen() {
 
 
     const [artist, setArtist] = useState(null);
-    const [albums, setAlbums] = useState(null);
+    //const [albums, setAlbums] = useState(null);
 
     const loadArtistInfo = async (_id) => {
         const artistData = await getArtist(_id);

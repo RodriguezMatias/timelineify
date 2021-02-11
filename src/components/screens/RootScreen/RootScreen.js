@@ -6,7 +6,7 @@ import {Route, Switch} from 'react-router';
 import SearchScreen from '../SearchScreen/SearchScreen';
 import ArtistScreen from '../ArtistScreen/ArtistScreen';
 import AboutScreen from '../AboutScreen/AboutScreen';
-import {Container, Flex, Spacer} from '@chakra-ui/layout';
+import {Container, Spacer} from '@chakra-ui/layout';
 import Footer from '../../features/Footer/Footer';
 import AuthScreen from '../AuthScreen/AuthScreen';
 import { SpotifyContextProvider } from '../../../context/SpotifyContext';

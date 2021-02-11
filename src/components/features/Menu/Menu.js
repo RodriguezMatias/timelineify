@@ -5,12 +5,10 @@ import {
     Spacer,
     Button,
     Avatar,
-    AvatarBadge,
-    AvatarGroup,
     HStack,
     Text
 } from '@chakra-ui/react';
-import {BrowserRouter, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {Container} from '@chakra-ui/layout';
 import {useContext} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';

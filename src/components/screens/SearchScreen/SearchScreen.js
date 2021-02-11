@@ -7,17 +7,14 @@ import {
     SimpleGrid,
     Box,
     HStack,
-    AspectRatio,
-    Image,
-    Square,
     Avatar,
     Spinner
 } from '@chakra-ui/react';
 import {InputGroup, InputRightElement} from '@chakra-ui/input';
-import {ChevronRightIcon, Search2Icon} from '@chakra-ui/icons';
+import {ChevronRightIcon} from '@chakra-ui/icons';
 import {useContext, useEffect, useState} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';
-import {useThrottle, useThrottleFn} from 'react-use';
+import {useThrottle} from 'react-use';
 import {useHistory} from 'react-router';
 
 function ArtistRow({ artist }) {

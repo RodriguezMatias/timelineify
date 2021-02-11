@@ -13,9 +13,7 @@ import {
 function GlobalModals() {
     const {
         loginFailed,
-        setLoginFailed,
-        sessionExpired,
-        setSessionExpired
+        setLoginFailed
     } = useContext(SpotifyContext);
 
     return (

@@ -1,12 +1,7 @@
 import {
-    Flex,
-    Box,
-    Heading,
-    Spacer,
-    Button
+    Box
 } from '@chakra-ui/react';
-import {Container, List, SimpleGrid, VStack} from '@chakra-ui/layout';
-import {BrowserRouter, Link} from 'react-router-dom';
+import {Container, SimpleGrid } from '@chakra-ui/layout';
 
 function Footer() {
     return (
