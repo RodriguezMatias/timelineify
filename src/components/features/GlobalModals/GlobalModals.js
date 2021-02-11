@@ -7,15 +7,22 @@ import {
     AlertDialogHeader,
     AlertDialogContent,
     AlertDialogOverlay,
-    Button
+    Button,
+    Text,
+    Heading
 } from "@chakra-ui/react"
+import {Spinner} from '@chakra-ui/spinner';
+import {LinkIcon} from '@chakra-ui/icons';
 
 function GlobalModals() {
     const {
         loginFailed,
         setLoginFailed,
         sessionExpired,
-        setSessionExpired
+        setSessionExpired,
+        creatingPlaylist,
+        createdPlaylist,
+        setCreatedPlaylist
     } = useContext(SpotifyContext);
 
     return (
@@ -59,6 +66,47 @@ function GlobalModals() {
                         <AlertDialogFooter>
                             <Button onClick={() => setSessionExpired(false)}>
                                 Continue
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+            <AlertDialog
+                isOpen={creatingPlaylist}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Creating playlist....
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            <Spinner mb={4}/>
+                        </AlertDialogBody>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+            <AlertDialog
+                isOpen={createdPlaylist !== null}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Created Playlist
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            {createdPlaylist !== null && (
+                                <>
+                                    <Text color={'gray.500'}>A playlist was saved to your account:</Text>
+                                    <a href={createdPlaylist.href}><Heading colorScheme='green' size={'md'} mt={2}><LinkIcon mr={2} />{createdPlaylist.name}</Heading></a>
+
+                                </>
+                            )}
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button onClick={() => setCreatedPlaylist(null)}>
+                                Done
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>

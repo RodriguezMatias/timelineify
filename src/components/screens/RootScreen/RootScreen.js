@@ -34,7 +34,7 @@ function RootScreen() {
         <BrowserRouter>
             <SpotifyContextProvider>
                     <Menu />
-                    <Container maxW={"1000px"} mb={10}>
+                    <Container maxW={"1000px"} mb={10} pl={5} pr={5}>
                         <Switch>
                             <Route exact path="/auth">
                                 <AuthScreen />

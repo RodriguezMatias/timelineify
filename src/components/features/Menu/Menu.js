@@ -6,7 +6,8 @@ import {
     Button,
     Avatar,
     HStack,
-    Text
+    Text,
+    Stack
 } from '@chakra-ui/react';
 import {Link} from 'react-router-dom';
 import {Container} from '@chakra-ui/layout';
@@ -37,16 +38,18 @@ function Menu() {
 
     return (
         <Box flex="0 0 auto" bg="gray.900" mt={"5px"} mb={10}>
-            <Container maxW={"1000px"}>
-                <Flex justify="center" align="center" mt={10} mb={10}>
+            <Container maxW={"1000px"} pl={5} pr={5}>
+                <Stack direction={["column", "column", "row"]} spacing={3} justify="stretch" align="center" mt={10} mb={10}>
                     <Link to="/">
                         <Heading size="lg">Timelineify 🎧</Heading>
                     </Link>
                     <Spacer />
+                    <HStack align={'center'} justify={'end'}>
+                        <Spacer />
                     {loggedIn && (
                         <>
                             <UserAvatar userData={userData} />
-                            <Button colorScheme="green" onClick={() => {
+                            <Button variant='outline' onClick={() => {
                                 logout();
                             }}>
                                 Log out
@@ -60,7 +63,8 @@ function Menu() {
                             Log in with Spotify
                         </Button>
                     )}
-                </Flex>
+                    </HStack>
+                </Stack>
             </Container>
         </Box>
     );

@@ -18,10 +18,12 @@ export function SpotifyContextProvider({ children }) {
     const [userData, setUserData] = useState(null);
     const [loginFailed, setLoginFailed] = useState(false);
     const [sessionExpired, setSessionExpired] = useState(false);
+    const [creatingPlaylist, setCreatingPlaylist] = useState(false);
+    const [createdPlaylist, setCreatedPlaylist] = useState(null);
 
     const startLogin = () => {
         console.log('Starting spotify login...');
-        window.location.href = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scopes=${scope}`
+        window.location.href = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scope}`
     }
 
     const finishLogin = async () => {
@@ -61,6 +63,7 @@ export function SpotifyContextProvider({ children }) {
         connection.current = null;
         setUserData(null);
         setAccessToken(null);
+        history.push('/');
     }
 
     const checkSession = async () => {
@@ -96,13 +99,13 @@ export function SpotifyContextProvider({ children }) {
         }
     }
 
-    const getTracks = async (artistId) => {
+    const getTracks = async (artistId, filter) => {
         const tracks = [];
         const convertDate = (date, precision) => {
             return moment(date);
         };
         try {
-            let nextAlbumRequest = `https://api.spotify.com/v1/artists/${artistId}/albums?market=US&include_groups=album&limit=50&offset=0`;
+            let nextAlbumRequest = `https://api.spotify.com/v1/artists/${artistId}/albums?market=US&include_groups=${filter}&limit=50&offset=0`;
             while (nextAlbumRequest !== null) {
                 const artistResponse = await connection.current.get(nextAlbumRequest);
                 const {
@@ -153,6 +156,25 @@ export function SpotifyContextProvider({ children }) {
         }
     }
 
+    const createSpotifyPlaylist = async (tracks, playlistName) => {
+        setCreatingPlaylist(true);
+
+        let newPlaylist = null;
+        try {
+            const playlistResponse = await connection.current.post(`https://api.spotify.com/v1/users/${userData.id}/playlists`, {
+                name: playlistName,
+                description: 'Chronological playlist generated with www.timelineify.com 🎧'
+            });
+            newPlaylist = playlistResponse.data;
+        } catch (e) {
+            checkSession();
+            return null;
+        }
+
+        setCreatedPlaylist(newPlaylist);
+        setCreatingPlaylist(false);
+    };
+
     const loggedIn = userData !== null;
 
     return (
@@ -171,7 +193,11 @@ export function SpotifyContextProvider({ children }) {
             expireSession,
             checkSession,
             accessToken,
-            getTracks
+            getTracks,
+            creatingPlaylist,
+            createdPlaylist,
+            setCreatedPlaylist,
+            createSpotifyPlaylist
         }}>
             { children }
         </StompClientContext.Provider>
