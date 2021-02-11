@@ -5,18 +5,42 @@ import {
     VStack,
     Button,
     Spacer,
-    Skeleton
+    Skeleton,
+    Text,
+    Table,
+    Thead,
+    Tbody,
+    Tfoot,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
 } from '@chakra-ui/react';
 import {useContext, useEffect, useState} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';
 import {useHistory, useParams} from 'react-router';
 import {ChevronLeftIcon} from '@chakra-ui/icons';
 
-function TrackRow({ track }) {
-    return (
-        <Box>
+function TrackRow({ track, index }) {
+    const {
+        name,
+        type,
+        albumMetadata
+    } = track;
 
-        </Box>
+    const {
+        name: albumName,
+        release_date,
+        momentDate
+    } = albumMetadata;
+
+    return (
+        <Tr>
+            <Td color={'gray.500'}>{index + 1}.</Td>
+            <Td>{name}</Td>
+            <Td color={'gray.500'}>{albumName}</Td>
+            <Td>{release_date}</Td>
+        </Tr>
     );
 }
 function ArtistScreen() {
@@ -24,7 +48,8 @@ function ArtistScreen() {
 
     const {
         getArtist,
-        checkSession
+        checkSession,
+        getTracks
     } = useContext(SpotifyContext);
     const history = useHistory();
 
@@ -44,10 +69,8 @@ function ArtistScreen() {
         setArtist(artistData);
 
         // Load the artist tracks
-        const tracks = [];
-
-
-
+        const tracks = await getTracks(_id);
+        setTracks(tracks);
     };
 
     useEffect(() => {
@@ -68,6 +91,9 @@ function ArtistScreen() {
                         </Skeleton>
                         <Skeleton h={8}>
                             <Heading color={'gray.300'}>Artist Name</Heading>
+                            {tracks !== null && (
+                                <Text>{tracks.length} tracks</Text>
+                            )}
                         </Skeleton>
                         <Spacer />
                     </HStack>
@@ -94,23 +120,49 @@ function ArtistScreen() {
                 </HStack>
             </Box>
             <Box borderRadius={'5px'} bg={'gray.700'} boxShadow={'dark-lg'} overflow='hidden' mb={2} p={5}>
-                <Heading size={'sm'} color={'gray.300'}>Timeline</Heading>
+                <Heading size={'sm'} color={'gray.300'}>Artist Timeline</Heading>
                 <Spacer />
-                {tracks !== null ? tracks.map((track) => <TrackRow track={track}/>)
-                 : (
-                     <>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    <Skeleton mt={3}>Test</Skeleton>
-                    </>
-                )}
+                <Table size="sm" mt={4}>
+                    <Thead>
+                        <Tr>
+                            <Th>#</Th>
+                            <Th>Track Name</Th>
+                            <Th >Album</Th>
+                            <Th minW={'150px'}>Release Date</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {tracks !== null ? tracks.map((track, i) => <TrackRow track={track} index={i}/>)
+                            : (
+                                <>
+                                    <Tr>
+                                        <Td><Skeleton>1</Skeleton></Td>
+                                        <Td><Skeleton>Test Test Test</Skeleton></Td>
+                                        <Td><Skeleton>Test Test</Skeleton></Td>
+                                        <Td><Skeleton>Test</Skeleton></Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td><Skeleton>1</Skeleton></Td>
+                                        <Td><Skeleton>Test Test Test</Skeleton></Td>
+                                        <Td><Skeleton>Test Test</Skeleton></Td>
+                                        <Td><Skeleton>Test</Skeleton></Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td><Skeleton>1</Skeleton></Td>
+                                        <Td><Skeleton>Test Test Test</Skeleton></Td>
+                                        <Td><Skeleton>Test Test</Skeleton></Td>
+                                        <Td><Skeleton>Test</Skeleton></Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td><Skeleton>1</Skeleton></Td>
+                                        <Td><Skeleton>Test Test Test</Skeleton></Td>
+                                        <Td><Skeleton>Test Test</Skeleton></Td>
+                                        <Td><Skeleton>Test</Skeleton></Td>
+                                    </Tr>
+                                </>
+                            )}
+                    </Tbody>
+                </Table>
             </Box>
         </VStack>
     );

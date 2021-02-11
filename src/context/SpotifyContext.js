@@ -1,6 +1,7 @@
 import React, { useRef, useState} from 'react';
 import axios from 'axios';
 import {useHistory} from 'react-router';
+import moment from 'moment';
 
 const StompClientContext = React.createContext(null);
 
@@ -39,14 +40,13 @@ export function SpotifyContextProvider({ children }) {
         const headers = {};
         headers.Authorization = `Bearer ${newAccessToken}`;
         connection.current = axios.create({
-            baseURL: 'https://api.spotify.com',
             timeout: 10000,
             crossDomain: true,
             headers
         });
 
         try {
-            const userDataResponse = await connection.current.get('/v1/me');
+            const userDataResponse = await connection.current.get('https://api.spotify.com/v1/me');
             setLoginFailed(false);
             setUserData(userDataResponse.data);
             history.push('/');
@@ -65,7 +65,7 @@ export function SpotifyContextProvider({ children }) {
 
     const checkSession = async () => {
         try {
-            await connection.current.get('/v1/me');
+            await connection.current.get('https://api.spotify.com/v1/me');
         } catch (e) {
             expireSession();
         }
@@ -78,7 +78,7 @@ export function SpotifyContextProvider({ children }) {
 
     const search = async (searchTerm) => {
         try {
-            const searchResponse = await connection.current.get(`/v1/search?q=${searchTerm}&type=artist`);
+            const searchResponse = await connection.current.get(`https://api.spotify.com/v1/search?q=${searchTerm}&type=artist`);
             return searchResponse.data;
         } catch (e) {
             checkSession();
@@ -88,7 +88,7 @@ export function SpotifyContextProvider({ children }) {
 
     const getArtist = async (artistId) => {
         try {
-            const artistResponse = await connection.current.get(`/v1/artists/${artistId}`);
+            const artistResponse = await connection.current.get(`https://api.spotify.com/v1/artists/${artistId}`);
             return artistResponse.data;
         } catch (e) {
             checkSession();
@@ -96,10 +96,57 @@ export function SpotifyContextProvider({ children }) {
         }
     }
 
-    const getAlbums = async (artistId, limit, offset) => {
+    const getTracks = async (artistId) => {
+        const tracks = [];
+        const convertDate = (date, precision) => {
+            return moment(date);
+        };
         try {
-            const artistResponse = await connection.current.get(`/v1/artists/${artistId}/albums?market=US&include_groups=album,single&limit=${limit}&offset=${offset}`);
-            return artistResponse.data;
+            let nextAlbumRequest = `https://api.spotify.com/v1/artists/${artistId}/albums?market=US&include_groups=album&limit=50&offset=0`;
+            while (nextAlbumRequest !== null) {
+                const artistResponse = await connection.current.get(nextAlbumRequest);
+                const {
+                    items: albumItems,
+                    next: nextAlbumUrl
+                } = artistResponse.data;
+
+                for (const album of albumItems) {
+                    let nextTrackRequest = `https://api.spotify.com/v1/albums/${album.id}/tracks?market=US&limit=50&offset=0`;
+                    while (nextTrackRequest !== null) {
+                        const tracksResponse = await connection.current.get(nextTrackRequest);
+                        const {
+                            items: trackItems,
+                            next: nextTrackUrl
+                        } = tracksResponse.data;
+
+                        trackItems.forEach((item) => tracks.push({
+                            ...item,
+                            albumMetadata: {
+                                release_date: album.release_date,
+                                release_date_precision: album.release_date_precision,
+                                momentDate: convertDate(album.release_date, album.release_date_precision),
+                                name: album.name,
+                                type: album.type
+                            }
+                        }));
+                        nextTrackRequest = nextTrackUrl || null;
+                    }
+                }
+                nextAlbumRequest = nextAlbumUrl || null;
+            }
+
+            tracks.sort((a, b) => {
+                const date1 = a.albumMetadata.momentDate;
+                const date2 = b.albumMetadata.momentDate;
+                if ( a.valueOf() < b.valueOf() ){
+                    return -1;
+                }
+                if ( a.valueOf() > b.valueOf() ){
+                    return 1;
+                }
+                return 0;
+            });
+            return tracks;
         } catch (e) {
             checkSession();
             return null;
@@ -123,7 +170,8 @@ export function SpotifyContextProvider({ children }) {
             setSessionExpired,
             expireSession,
             checkSession,
-            accessToken
+            accessToken,
+            getTracks
         }}>
             { children }
         </StompClientContext.Provider>
