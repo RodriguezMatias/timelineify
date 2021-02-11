@@ -26,7 +26,7 @@ import {
     MenuIcon,
     MenuCommand,
     MenuDivider,
-    Divider
+    Divider, Spinner
 } from '@chakra-ui/react';
 import {useContext, useEffect, useState} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';
@@ -44,14 +44,23 @@ function TrackRow({ track, index }) {
     const {
         name: albumName,
         release_date,
-        momentDate
+        release_date_precision,
+        momentDate,
+        href: albumHref
     } = albumMetadata;
+
+    let dateStr = release_date;
+    if (release_date_precision === 'day') {
+        dateStr = momentDate.format('MMM Mo, YYYY');
+    } else if (release_date_precision === 'month') {
+        dateStr = momentDate.format('Mo YYYY');
+    }
 
     return (
         <Tr>
-            <Td pl={0}>{name}</Td>
-            <Td color={'gray.500'}>{albumName}</Td>
-            <Td pr={0}>{release_date}</Td>
+            <Td pl={0}><a href={track.external_urls.spotify} target="_blank" rel="noreferrer">{name}</a></Td>
+            <Td color={'gray.500'}><a href={albumHref} target="_blank" rel="noreferrer">{albumName}</a></Td>
+            <Td pr={0}>{dateStr}</Td>
         </Tr>
     );
 }
@@ -70,6 +79,7 @@ function ArtistScreen() {
 
     const [artist, setArtist] = useState(null);
     const [tracks, setTracks] = useState(null);
+    const [sortedTracks, setSortedTracks] = useState(null);
     const [showAlbums, setShowAlbums] = useState(true);
     const [showSingles, setShowSingles] = useState(true);
     const [sortOrder, setSortOrder] = useState('Oldest First');
@@ -92,6 +102,28 @@ function ArtistScreen() {
         setTracks(tracks);
     }
 
+    const sortTracks = async () => {
+        if (!tracks) {
+            setSortedTracks(null);
+            return;
+        }
+        const newSortedTracks = tracks.slice(0);
+        newSortedTracks.sort((a, b) => {
+            const date1 = a.albumMetadata.momentDate;
+            const date2 = b.albumMetadata.momentDate;
+            if (sortOrder === 'Oldest First') {
+                return date1.diff(date2);
+            } else {
+                return date2.diff(date1);
+            }
+        });
+        setSortedTracks(newSortedTracks);
+    }
+
+    useEffect(() => {
+        sortTracks();
+    }, [tracks, sortOrder]);
+
     useEffect(() => {
         let filter = '';
         if (showAlbums && showSingles) {
@@ -109,7 +141,7 @@ function ArtistScreen() {
         loadArtistInfo(id);
     }, [id]);
 
-    const hasTracks = tracks !== null && tracks.length > 0;
+    const hasTracks = sortedTracks !== null && sortedTracks.length > 0;
 
     if (!artist) {
         return (
@@ -124,8 +156,8 @@ function ArtistScreen() {
                         </Skeleton>
                         <Skeleton h={8}>
                             <Heading color={'gray.300'}>Artist Name</Heading>
-                            {tracks !== null && (
-                                <Text>{tracks.length} tracks</Text>
+                            {sortedTracks !== null && (
+                                <Text>{sortedTracks.length} tracks</Text>
                             )}
                         </Skeleton>
                         <Spacer />
@@ -150,16 +182,26 @@ function ArtistScreen() {
                     <HStack align={'top'}>
                         <Avatar src={images.length > 0 ? images[0].url : null} name={name} borderRadius={5} size={'xl'} mr={4} bg={'gray.500'}/>
                         <VStack justify={'center'} align={'start'}>
-                            <Heading color={'gray.300'}>{name}</Heading>
-                            <Text color={'gray.500'}>{tracks !== null ? `${tracks.length} tracks` : 'Loading tracks...'}</Text>
+                            <a href={artist.external_urls.spotify} target="_blank" rel="noreferrer"><Heading color={'gray.300'}>{name}</Heading></a>
+                            <Text color={'gray.500'}>{tracks !== null ? `${tracks.length} tracks` : (
+                                <>
+                                    <Spinner size={'sm'} mr={2} color={'gray.500'}/>
+                                    Loading tracks. This might take a little while...
+                                </>
+                            )
+                            }</Text>
                         </VStack>
                         <Spacer />
                     </HStack>
                     <Spacer />
                     <Button colorScheme={'green'} onClick={() => {
-                        createSpotifyPlaylist(tracks, `Artist Timeline: ${artist.name} // Timelineify`);
+                        createSpotifyPlaylist(
+                            sortedTracks,
+                            `Artist Timeline: ${artist.name} // Timelineify`,
+                            `Sort Order: ${sortOrder} | Chronological playlist generated with www.timelineify.com 🎧`
+                        );
                     }}
-                            disabled={creatingSpotifyPlaylist}
+                            disabled={creatingSpotifyPlaylist || !hasTracks}
                     >Save Timeline as Playlist</Button>
                 </Stack>
             </Box>
@@ -193,7 +235,7 @@ function ArtistScreen() {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {tracks !== null ? tracks.map((track, i) => <TrackRow track={track} index={i}/>)
+                        {sortedTracks !== null ? sortedTracks.map((track, i) => <TrackRow track={track} index={i}/>)
                             : (
                                 <>
                                     <Tr>
@@ -218,7 +260,7 @@ function ArtistScreen() {
                                     </Tr>
                                 </>
                             )}
-                        {(tracks !== null && tracks.length === 0) && (
+                        {(sortedTracks !== null && sortedTracks.length === 0) && (
 
                             <Tr>
                                 <Td colspan={3} pl={0} pr={0}>No tracks were found with this filter.</Td>

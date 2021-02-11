@@ -17,13 +17,16 @@ import SpotifyContext from '../../../context/SpotifyContext';
 function UserAvatar({ userData }) {
     const {
         images,
-        display_name
+        display_name,
+        external_urls
     } = userData;
 
     return (
         <HStack mr={4}>
             <Avatar size="sm" name={display_name} src={images.length > 0 ? images[0].url : ''} />
-            <Text fontSize="lg">{display_name}</Text>
+            <a href={external_urls.spotify} target="_blank" rel="noreferrer">
+                <Text fontSize="lg">{display_name}</Text>
+            </a>
         </HStack>
     );
 }

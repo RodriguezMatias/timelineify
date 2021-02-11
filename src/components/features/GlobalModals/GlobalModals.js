@@ -99,7 +99,7 @@ function GlobalModals() {
                             {createdPlaylist !== null && (
                                 <>
                                     <Text color={'gray.500'}>A playlist was saved to your account:</Text>
-                                    <a href={createdPlaylist.href}><Heading colorScheme='green' size={'md'} mt={2}><LinkIcon mr={2} />{createdPlaylist.name}</Heading></a>
+                                    <a href={createdPlaylist.external_urls.spotify} target="_blank" rel="noreferrer"><Heading colorScheme='green' size={'md'} mt={2}><LinkIcon mr={2} />{createdPlaylist.name}</Heading></a>
 
                                 </>
                             )}

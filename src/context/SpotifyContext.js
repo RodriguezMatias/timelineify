@@ -113,7 +113,14 @@ export function SpotifyContextProvider({ children }) {
                     next: nextAlbumUrl
                 } = artistResponse.data;
 
+                const albumNames = {};
+
                 for (const album of albumItems) {
+                    if (Object.hasOwnProperty.call(albumNames, album.name)) {
+                        continue;
+                    } else {
+                        albumNames[album.name] = true;
+                    }
                     let nextTrackRequest = `https://api.spotify.com/v1/albums/${album.id}/tracks?market=US&limit=50&offset=0`;
                     while (nextTrackRequest !== null) {
                         const tracksResponse = await connection.current.get(nextTrackRequest);
@@ -127,6 +134,7 @@ export function SpotifyContextProvider({ children }) {
                             albumMetadata: {
                                 release_date: album.release_date,
                                 release_date_precision: album.release_date_precision,
+                                href: album.external_urls.spotify,
                                 momentDate: convertDate(album.release_date, album.release_date_precision),
                                 name: album.name,
                                 type: album.type
@@ -138,17 +146,6 @@ export function SpotifyContextProvider({ children }) {
                 nextAlbumRequest = nextAlbumUrl || null;
             }
 
-            tracks.sort((a, b) => {
-                const date1 = a.albumMetadata.momentDate;
-                const date2 = b.albumMetadata.momentDate;
-                if ( a.valueOf() < b.valueOf() ){
-                    return -1;
-                }
-                if ( a.valueOf() > b.valueOf() ){
-                    return 1;
-                }
-                return 0;
-            });
             return tracks;
         } catch (e) {
             checkSession();
@@ -156,18 +153,37 @@ export function SpotifyContextProvider({ children }) {
         }
     }
 
-    const createSpotifyPlaylist = async (tracks, playlistName) => {
+    const createSpotifyPlaylist = async (tracks, playlistName, description) => {
         setCreatingPlaylist(true);
 
         let newPlaylist = null;
         try {
             const playlistResponse = await connection.current.post(`https://api.spotify.com/v1/users/${userData.id}/playlists`, {
                 name: playlistName,
-                description: 'Chronological playlist generated with www.timelineify.com 🎧'
+                description
             });
             newPlaylist = playlistResponse.data;
+
+            // Add all tracks to the playlist in batches of 100
+            let trackBatch = [];
+            for (const track of tracks) {
+                trackBatch.push(track.uri);
+                if (trackBatch.length >= 100) {
+                    await connection.current.post(`https://api.spotify.com/v1/playlists/${newPlaylist.id}/tracks`, {
+                        uris: trackBatch
+                    });
+                    trackBatch = [];
+                }
+            }
+            if (trackBatch.length > 0) {
+                await connection.current.post(`https://api.spotify.com/v1/playlists/${newPlaylist.id}/tracks`, {
+                    uris: trackBatch
+                });
+            }
         } catch (e) {
             checkSession();
+            setCreatedPlaylist(null);
+            setCreatingPlaylist(false);
             return null;
         }
 
