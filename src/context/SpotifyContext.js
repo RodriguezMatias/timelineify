@@ -10,7 +10,6 @@ export function SpotifyContextProvider({ children }) {
     const clientId = "7db92e56e9244449b3eebc16f40ad031";
     const redirectUri = `${window.location.protocol}//${window.location.host}/auth`;
     const scope = "playlist-modify-public";
-    const authRequestUuid = null;
     const history = useHistory();
 
     const connection = useRef(null);
@@ -66,7 +65,7 @@ export function SpotifyContextProvider({ children }) {
 
     const checkSession = async () => {
         try {
-            const userDataResponse = await connection.current.get('/v1/me');
+            await connection.current.get('/v1/me');
         } catch (e) {
             expireSession();
         }
@@ -97,6 +96,16 @@ export function SpotifyContextProvider({ children }) {
         }
     }
 
+    const getAlbums = async (artistId, limit, offset) => {
+        try {
+            const artistResponse = await connection.current.get(`/v1/artists/${artistId}/albums?market=US&include_groups=album,single&limit=${limit}&offset=${offset}`);
+            return artistResponse.data;
+        } catch (e) {
+            checkSession();
+            return null;
+        }
+    }
+
     const loggedIn = userData !== null;
 
     return (
@@ -113,7 +122,8 @@ export function SpotifyContextProvider({ children }) {
             sessionExpired,
             setSessionExpired,
             expireSession,
-            checkSession
+            checkSession,
+            accessToken
         }}>
             { children }
         </StompClientContext.Provider>

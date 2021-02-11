@@ -12,6 +12,13 @@ import SpotifyContext from '../../../context/SpotifyContext';
 import {useHistory, useParams} from 'react-router';
 import {ChevronLeftIcon} from '@chakra-ui/icons';
 
+function TrackRow({ track }) {
+    return (
+        <Box>
+
+        </Box>
+    );
+}
 function ArtistScreen() {
     const { id } = useParams();
 
@@ -23,7 +30,7 @@ function ArtistScreen() {
 
 
     const [artist, setArtist] = useState(null);
-    //const [albums, setAlbums] = useState(null);
+    const [tracks, setTracks] = useState(null);
 
     const loadArtistInfo = async (_id) => {
         const artistData = await getArtist(_id);
@@ -35,6 +42,12 @@ function ArtistScreen() {
         }
 
         setArtist(artistData);
+
+        // Load the artist tracks
+        const tracks = [];
+
+
+
     };
 
     useEffect(() => {
@@ -51,10 +64,10 @@ function ArtistScreen() {
                 <Box borderRadius={'5px'} bg={'gray.700'} boxShadow={'dark-lg'} overflow='hidden' mb={2} p={2}>
                     <HStack p={2} align={'top'}>
                         <Skeleton>
-                        <Avatar borderRadius={5} size={'2xl'} mr={4}/>
+                            <Avatar borderRadius={5} size={'2xl'} mr={4}/>
                         </Skeleton>
                         <Skeleton h={8}>
-                        <Heading color={'gray.300'}>Artist Name</Heading>
+                            <Heading color={'gray.300'}>Artist Name</Heading>
                         </Skeleton>
                         <Spacer />
                     </HStack>
@@ -83,6 +96,21 @@ function ArtistScreen() {
             <Box borderRadius={'5px'} bg={'gray.700'} boxShadow={'dark-lg'} overflow='hidden' mb={2} p={5}>
                 <Heading size={'sm'} color={'gray.300'}>Timeline</Heading>
                 <Spacer />
+                {tracks !== null ? tracks.map((track) => <TrackRow track={track}/>)
+                 : (
+                     <>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    <Skeleton mt={3}>Test</Skeleton>
+                    </>
+                )}
             </Box>
         </VStack>
     );

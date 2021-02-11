@@ -13,14 +13,14 @@ function AuthScreen() {
 
     useEffect(() => {
         finishLogin();
-    }, []);
+    }, [finishLogin]);
 
     return (
         <div className="AuthScreen">
             <Spinner size="xl"
                      thickness="4px"
                      color="gray.500"/>
-             <Heading size={"sm"} mt={4}>Connecting to Spotify....</Heading>
+            <Heading size={"sm"} mt={4}>Connecting to Spotify....</Heading>
         </div>
     );
 }
