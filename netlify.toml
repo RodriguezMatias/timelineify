@@ -5,8 +5,8 @@
   force = true
   headers = {X-From = "Netlify"}
 [[redirects]]
-  from = "/api"
-  to = "https://umami.telemetryjet.com/api"
+  from = "/api/*"
+  to = "https://umami.telemetryjet.com/api/:splat"
   status = 200
   force = true
   headers = {X-From = "Netlify"}
