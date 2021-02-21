@@ -5,7 +5,6 @@ import {BrowserRouter, Redirect} from 'react-router-dom';
 import {Route, Switch} from 'react-router';
 import SearchScreen from '../SearchScreen/SearchScreen';
 import ArtistScreen from '../ArtistScreen/ArtistScreen';
-import AboutScreen from '../AboutScreen/AboutScreen';
 import {Container, Spacer} from '@chakra-ui/layout';
 import Footer from '../../features/Footer/Footer';
 import AuthScreen from '../AuthScreen/AuthScreen';
@@ -41,9 +40,6 @@ function RootScreen() {
                             </Route>
                             <Route exact path="/">
                                 <SearchScreen />
-                            </Route>
-                            <Route exact path="/about">
-                                <AboutScreen />
                             </Route>
                             <Route path="/artist/:id">
                                 <ArtistScreen />

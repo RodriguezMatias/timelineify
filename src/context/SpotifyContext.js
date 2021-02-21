@@ -28,12 +28,13 @@ export function SpotifyContextProvider({ children }) {
 
     const finishLogin = async () => {
         console.log('Finishing spotify login...');
+        setLoginFailed(false);
         // Grab the access token from the URL
         const urlParams = new URL(window.location.href.replace(/#/g,"?"));
         const newAccessToken = urlParams.searchParams.get("access_token");
 
+        console.log(newAccessToken);
         if (!newAccessToken) {
-            setLoginFailed(true);
             history.push('/');
             return;
         }

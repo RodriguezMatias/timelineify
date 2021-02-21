@@ -85,7 +85,7 @@ function SearchScreen() {
                     <SimpleGrid columns={[1, null, 2]}>
                         <VStack align="stretch">
                             <Button mt={3} mb={1} onClick={startLogin}>Log in with Spotify to get started</Button>
-                            <Text fontSize="sm" color="gray.500">We don't store your login info anywhere, or collect any information. Timelineify is contained in your browser.</Text>
+                            <Text fontSize="sm" color="gray.500">We don't store your login info anywhere, or collect any information about your searches. Timelineify is contained in your browser.</Text>
                         </VStack>
                     </SimpleGrid>
                 </>
