@@ -88,6 +88,11 @@ function SearchScreen() {
                             <Text fontSize="sm" color="gray.500">We don't store your login info anywhere, or collect any information about your searches. Timelineify is contained in your browser.</Text>
                         </VStack>
                     </SimpleGrid>
+                    <Heading mt={4} size="md" color="gray.500" mb={3}>Demo Video</Heading>
+                    <iframe frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"width="788.54" height="443"
+                        type="text/html"
+                        src="https://www.youtube.com/embed/G603-ruJ3YQ?autoplay=0&fs=1&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0">
+                    </iframe>
                 </>
             )}
             {loggedIn && (
