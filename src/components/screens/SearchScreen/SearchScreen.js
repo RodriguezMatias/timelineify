@@ -16,6 +16,7 @@ import {useContext, useEffect, useState} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';
 import {useThrottle} from 'react-use';
 import {useHistory} from 'react-router';
+import {AspectRatio} from '@chakra-ui/layout';
 
 function ArtistRow({ artist }) {
     const {
@@ -89,10 +90,16 @@ function SearchScreen() {
                         </VStack>
                     </SimpleGrid>
                     <Heading mt={4} size="md" color="gray.500" mb={3}>Demo Video</Heading>
-                    <iframe frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"width="788.54" height="443"
-                        type="text/html"
-                        src="https://www.youtube.com/embed/G603-ruJ3YQ?autoplay=0&fs=1&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0">
-                    </iframe>
+                    <AspectRatio maxW="100%" ratio={2}>
+                        <iframe
+                            frameBorder="0"
+                            scrolling="no"
+                            type="text/html"
+                            allowFullscreen
+                            src="https://www.youtube.com/embed/G603-ruJ3YQ?autoplay=0&fs=1&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0">
+                        </iframe>
+                    </AspectRatio>
+
                 </>
             )}
             {loggedIn && (
