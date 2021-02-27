@@ -22,6 +22,7 @@ export function SpotifyContextProvider({ children }) {
     const [createdPlaylist, setCreatedPlaylist] = useState(null);
 
     const startLogin = () => {
+        umami('spotify-login-start');
         console.log('Starting spotify login...');
         window.location.href = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scope}`
     }
@@ -53,9 +54,11 @@ export function SpotifyContextProvider({ children }) {
             setLoginFailed(false);
             setUserData(userDataResponse.data);
             history.push('/');
+            umami('spotify-login-success');
         } catch (e) {
             setLoginFailed(true);
             history.push('/');
+            umami('spotify-login-failure');
         }
     }
 
@@ -65,6 +68,7 @@ export function SpotifyContextProvider({ children }) {
         setUserData(null);
         setAccessToken(null);
         history.push('/');
+        umami('spotify-logout');
     }
 
     const checkSession = async () => {
@@ -82,6 +86,7 @@ export function SpotifyContextProvider({ children }) {
 
     const search = async (searchTerm) => {
         try {
+            umami('search');
             const searchResponse = await connection.current.get(`https://api.spotify.com/v1/search?q=${searchTerm}&type=artist`);
             return searchResponse.data;
         } catch (e) {
@@ -91,6 +96,7 @@ export function SpotifyContextProvider({ children }) {
     }
 
     const getArtist = async (artistId) => {
+        umami('get-artist');
         try {
             const artistResponse = await connection.current.get(`https://api.spotify.com/v1/artists/${artistId}`);
             return artistResponse.data;
@@ -101,6 +107,7 @@ export function SpotifyContextProvider({ children }) {
     }
 
     const getTracks = async (artistId, filter) => {
+        umami('get-artist-tracks');
         const tracks = [];
         const convertDate = (date, precision) => {
             return moment(date);
@@ -156,6 +163,7 @@ export function SpotifyContextProvider({ children }) {
 
     const createSpotifyPlaylist = async (tracks, playlistName, description) => {
         setCreatingPlaylist(true);
+        umami('create-playlist');
 
         let newPlaylist = null;
         try {
