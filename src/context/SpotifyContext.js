@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 import React, { useRef, useState} from 'react';
 import axios from 'axios';
 import {useHistory} from 'react-router';
