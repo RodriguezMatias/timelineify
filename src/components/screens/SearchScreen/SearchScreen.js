@@ -79,8 +79,8 @@ function SearchScreen() {
                     <Text mt={1} fontSize="lg">Create a playlist containing a Spotify artist's discography in chronological order.</Text >
                     <Heading mt={4} size="md" color="gray.500">Why?</Heading>
                     <Text mt={1} fontSize="lg">
-                        Spotify messes with the order of albums & singles, making it impossible to hear an artist's works in the order they were released without creating a playlist by hand.<br/><br />
-                        "If all you have is a hammer, everything looks like a nail"... 10 hours later, here we are. 😀
+                        Spotify messes with the order of albums & singles, making it difficult to hear an artist's works in the order they were released.<br /><br />
+                        Timelineify generates a chronological playlist of an artist's entire discography with a few clicks!
                     </Text >
                     <Heading mt={4} size="md" color="gray.500">How?</Heading>
                     <SimpleGrid columns={[1, null, 2]}>
