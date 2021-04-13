@@ -10,9 +10,12 @@ import {
     Stack
 } from '@chakra-ui/react';
 import {Link} from 'react-router-dom';
-import {Container} from '@chakra-ui/layout';
-import {useContext} from 'react';
+import {Container, LinkOverlay} from '@chakra-ui/layout';
+import {useContext, useState} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';
+import {Alert, AlertDescription, AlertIcon} from '@chakra-ui/alert';
+import {CloseButton} from '@chakra-ui/close-button';
+import { Fade, ScaleFade, Slide, SlideFade } from "@chakra-ui/react"
 
 function UserAvatar({ userData }) {
     const {
@@ -40,36 +43,38 @@ function Menu() {
     } = useContext(SpotifyContext);
 
     return (
-        <Box flex="0 0 auto" bg="gray.900" mt={"5px"} mb={10}>
-            <Container maxW={"1000px"} pl={5} pr={5}>
-                <Stack direction={["column", "column", "row"]} spacing={3} justify="stretch" align="center" mt={10} mb={10}>
-                    <Link to="/">
-                        <Heading size="lg">Timelineify 🎧</Heading>
-                    </Link>
-                    <Spacer />
-                    <HStack align={'center'} justify={'end'}>
+        <>
+            <Box flex="0 0 auto" bg="gray.900" mt={"5px"} mb={10}>
+                <Container maxW={"1000px"} pl={5} pr={5}>
+                    <Stack direction={["column", "column", "row"]} spacing={3} justify="stretch" align="center" mt={10} mb={10}>
+                        <Link to="/">
+                            <Heading size="lg">Timelineify 🎧</Heading>
+                        </Link>
                         <Spacer />
-                    {loggedIn && (
-                        <>
-                            <UserAvatar userData={userData} />
-                            <Button variant='outline' onClick={() => {
-                                logout();
+                        <HStack align={'center'} justify={'end'}>
+                            <Spacer />
+                        {loggedIn && (
+                            <>
+                                <UserAvatar userData={userData} />
+                                <Button variant='outline' onClick={() => {
+                                    logout();
+                                }}>
+                                    Log out
+                                </Button>
+                            </>
+                        )}
+                        {!loggedIn && (
+                            <Button colorScheme="green" onClick={() => {
+                                startLogin();
                             }}>
-                                Log out
+                                Log in with Spotify
                             </Button>
-                        </>
-                    )}
-                    {!loggedIn && (
-                        <Button colorScheme="green" onClick={() => {
-                            startLogin();
-                        }}>
-                            Log in with Spotify
-                        </Button>
-                    )}
-                    </HStack>
-                </Stack>
-            </Container>
-        </Box>
+                        )}
+                        </HStack>
+                    </Stack>
+                </Container>
+            </Box>
+        </>
     );
 }
 

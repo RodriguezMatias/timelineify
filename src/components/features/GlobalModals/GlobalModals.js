@@ -13,6 +13,8 @@ import {
 } from "@chakra-ui/react"
 import {Spinner} from '@chakra-ui/spinner';
 import {LinkIcon} from '@chakra-ui/icons';
+import {Alert, AlertIcon} from '@chakra-ui/alert';
+import {LinkOverlay} from '@chakra-ui/layout';
 
 function GlobalModals() {
     const {
@@ -101,6 +103,15 @@ function GlobalModals() {
                                     <Text color={'gray.500'}>A playlist was saved to your account:</Text>
                                     <a href={createdPlaylist.external_urls.spotify} target="_blank" rel="noreferrer"><Heading colorScheme='green' size={'md'} mt={2}><LinkIcon mr={2} />{createdPlaylist.name}</Heading></a>
 
+                                        <Alert mt={5}  status="success" variant="top-accent" borderRadius={5} cursor="pointer">
+                                            <LinkOverlay href="https://www.buymeacoffee.com/chrisdalke" target="_blank">
+                                            <AlertIcon />
+                                            <div>
+                                                Timelineify is free because of your support!<br />
+                                                <u>Like it? Buy me a coffee!</u>
+                                            </div>
+                                            </LinkOverlay>
+                                        </Alert>
                                 </>
                             )}
                         </AlertDialogBody>
