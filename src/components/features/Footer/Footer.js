@@ -14,7 +14,7 @@ function Footer() {
         <>
             <Box flex="0 0 auto" bg="gray.900">
                 <Container flex="0 0 auto" maxW={"1000px"} pl={5} pr={5}>
-                        <LinkBox mt={10} mb={4} p={5} borderRadius={'5px'} bg={'gray.700'} boxShadow={'dark-lg'} cursor="pointer" fontSize={14}>
+                        <LinkBox mt={10} mb={4} p={5} borderRadius={'5px'} bg={'gray.700'} boxShadow={'dark-lg'} cursor="pointer" fontSize={16}>
                             <LinkOverlay href="https://www.buymeacoffee.com/chrisdalke" target="_blank">
 
                                 <Stack direction={["column", "row", "row"]} spacing={3} justify="stretch" align="flex-start">
