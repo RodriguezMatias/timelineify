@@ -1,4 +1,6 @@
 # Timelineify
+<a href="https://www.buymeacoffee.com/chrisdalke"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=chrisdalke&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff"></a>
+
 ### What?
 Create a playlist containing a Spotify artist's discography in chronological order.
 
