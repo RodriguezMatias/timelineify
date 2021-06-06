@@ -18,4 +18,4 @@ Uses the Spotify API to query artists and create sorted playlists. Uses React, C
 Deployed to [https://www.timelineify.com/](https://www.timelineify.com/)
 
 ## Video Demo
-[https://www.youtube.com/watch?v=0ks0hB844cA](https://www.youtube.com/watch?v=0ks0hB844cA)
+[https://www.youtube.com/watch?v=G603-ruJ3YQ](https://www.youtube.com/watch?v=0ks0hB844cA)
