@@ -1,16 +1,4 @@
 [[redirects]]
-  from = "/umami.js"
-  to = "https://umami.telemetryjet.com/umami.js"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
-[[redirects]]
-  from = "/api/*"
-  to = "https://umami.telemetryjet.com/api/:splat"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
-[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
