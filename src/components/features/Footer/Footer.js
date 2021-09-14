@@ -16,7 +16,7 @@ function Footer() {
                 <Container maxW={"1000px"} mb={6} mt={6} pl={7} pr={7}>
                     <Flex align='center'>
                         <Box color={"gray.600"} mr={3}>
-                            Built by Chris Dalke &middot; <a href="https://github.com/chrisdalke">github.com/chrisdalke</a> & middot; <a href="https://www.buymeacoffee.com/chrisdalke">Buy me a Coffee</a>
+                            Built by Chris Dalke &middot; <a href="https://github.com/chrisdalke">github.com/chrisdalke</a> &middot; <a href="https://www.buymeacoffee.com/chrisdalke">Buy me a Coffee</a>
                         </Box>
                         <Spacer />
                         <Box>
