@@ -100,6 +100,8 @@ function ArtistScreen() {
 
     const loadTrackInfo = async (_id, filter) => {
         // Load the artist tracks
+        // Clear the tracks while loading new list.
+        setTracks(null);
         const tracks = await getTracks(_id, filter);
         setTracks(tracks);
     }
