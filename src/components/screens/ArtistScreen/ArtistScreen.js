@@ -223,7 +223,6 @@ function ArtistScreen() {
                     <HStack>
                         <Checkbox size={'sm'} isChecked={showAlbums} onChange={() => setShowAlbums(!showAlbums)}>Albums</Checkbox>
                         <Checkbox size={'sm'} isChecked={showSingles} onChange={() => setShowSingles(!showSingles)}>Singles</Checkbox>
-                        <Checkbox size={'sm'} isChecked={showAppearsOn} onChange={() => setShowAppearsOn(!showAppearsOn)}>Appears On</Checkbox>
                         <Checkbox size={'sm'} isChecked={showCompilation} onChange={() => setShowCompilation(!showCompilation)}>Compilation</Checkbox>
                         <Menu>
                             <MenuButton size={'sm'} variant={'minimal'} as={Button} rightIcon={<ChevronDownIcon />}>
