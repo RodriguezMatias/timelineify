@@ -82,6 +82,8 @@ function ArtistScreen() {
     const [sortedTracks, setSortedTracks] = useState(null);
     const [showAlbums, setShowAlbums] = useState(true);
     const [showSingles, setShowSingles] = useState(true);
+    const [showAppearsOn, setShowAppearsOn] = useState(false);
+    const [showCompilation, setShowCompilation] = useState(false);
     const [sortOrder, setSortOrder] = useState('Oldest First');
 
     const loadArtistInfo = async (_id) => {
@@ -125,16 +127,23 @@ function ArtistScreen() {
     }, [tracks, sortOrder]);
 
     useEffect(() => {
+        let filterArr = [];
         let filter = '';
-        if (showAlbums && showSingles) {
-            filter='album,single'
-        } else if (showAlbums) {
-            filter='album'
-        } else if (showSingles) {
-            filter='single'
+        if (showAlbums) {
+            filterArr.push('album')
         }
+        if (showSingles) {
+            filterArr.push('single')
+        }
+        if (showAppearsOn) {
+            filterArr.push('appears_on')
+        }
+        if (showCompilation) {
+            filterArr.push('compilation')
+        }
+        filter = filterArr.join(',');
         loadTrackInfo(id, filter);
-    }, [id, showAlbums, showSingles]);
+    }, [id, showAlbums, showSingles, showAppearsOn, showCompilation]);
 
 
     useEffect(() => {
@@ -212,6 +221,8 @@ function ArtistScreen() {
                     <HStack>
                         <Checkbox size={'sm'} isChecked={showAlbums} onChange={() => setShowAlbums(!showAlbums)}>Albums</Checkbox>
                         <Checkbox size={'sm'} isChecked={showSingles} onChange={() => setShowSingles(!showSingles)}>Singles</Checkbox>
+                        <Checkbox size={'sm'} isChecked={showAppearsOn} onChange={() => setShowAppearsOn(!showAppearsOn)}>Appears On</Checkbox>
+                        <Checkbox size={'sm'} isChecked={showCompilation} onChange={() => setShowCompilation(!showCompilation)}>Compilation</Checkbox>
                         <Menu>
                             <MenuButton size={'sm'} variant={'minimal'} as={Button} rightIcon={<ChevronDownIcon />}>
                                 {sortOrder}
