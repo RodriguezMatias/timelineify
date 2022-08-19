@@ -10,34 +10,24 @@ import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
-    TableCaption,
     Checkbox, Stack,
     Menu,
     MenuButton,
     MenuList,
     MenuItem,
-    MenuItemOption,
-    MenuGroup,
-    MenuOptionGroup,
-    MenuIcon,
-    MenuCommand,
-    MenuDivider,
     Divider, Spinner
 } from '@chakra-ui/react';
 import {useContext, useEffect, useState} from 'react';
 import SpotifyContext from '../../../context/SpotifyContext';
 import {useHistory, useParams} from 'react-router';
 import {ChevronDownIcon, ChevronLeftIcon} from '@chakra-ui/icons';
-import {Container} from '@chakra-ui/layout';
 
 function TrackRow({ track, index }) {
     const {
         name,
-        type,
         albumMetadata
     } = track;
 
@@ -79,6 +69,7 @@ function ArtistScreen() {
 
     const [artist, setArtist] = useState(null);
     const [tracks, setTracks] = useState(null);
+    const [searchFilter, setsearchFilter] = useState(null);
     const [sortedTracks, setSortedTracks] = useState(null);
     const [showAlbums, setShowAlbums] = useState(true);
     const [showSingles, setShowSingles] = useState(true);
@@ -111,7 +102,11 @@ function ArtistScreen() {
             setSortedTracks(null);
             return;
         }
-        const newSortedTracks = tracks.slice(0);
+        var newSortedTracks = tracks.slice(0);
+
+        if(searchFilter)
+        newSortedTracks = newSortedTracks.filter((track) => (track.albumMetadata.name.includes(searchFilter) || track.name.includes(searchFilter)));
+
         newSortedTracks.sort((a, b) => {
             const date1 = a.albumMetadata.momentDate;
             const date2 = b.albumMetadata.momentDate;
@@ -121,6 +116,7 @@ function ArtistScreen() {
                 return date2.diff(date1);
             }
         });
+
         setSortedTracks(newSortedTracks);
     }
 
@@ -183,6 +179,11 @@ function ArtistScreen() {
         images
     } = artist;
 
+    function handleSearchFilterChange(event) {
+        setsearchFilter(event.target.value);
+        sortTracks();
+      }
+
     return (
         <VStack align={'stretch'}>
             <Box align={'right'} color={'gray.500'}>
@@ -209,7 +210,8 @@ function ArtistScreen() {
                         createSpotifyPlaylist(
                             sortedTracks,
                             `Artist Timeline: ${artist.name} // Timelineify`,
-                            `Sort Order: ${sortOrder} | Chronological playlist generated with www.timelineify.com 🎧`
+                            `Sort Order: ${sortOrder} | Chronological playlist generated with www.timelineify.com 🎧`,
+                            searchFilter
                         );
                     }}
                             disabled={creatingSpotifyPlaylist || !hasTracks}
@@ -221,6 +223,7 @@ function ArtistScreen() {
                     <Heading size={'sm'} color={'gray.300'} mr={3}>Artist Timeline</Heading>
                     <Spacer />
                     <HStack>
+                        <input style={{ color: 'black' }} type="text"  name="searchFilter" onChange={handleSearchFilterChange} value={searchFilter}/>
                         <Checkbox size={'sm'} isChecked={showAlbums} onChange={() => setShowAlbums(!showAlbums)}>Albums</Checkbox>
                         <Checkbox size={'sm'} isChecked={showSingles} onChange={() => setShowSingles(!showSingles)}>Singles</Checkbox>
                         <Checkbox size={'sm'} isChecked={showCompilation} onChange={() => setShowCompilation(!showCompilation)}>Compilation</Checkbox>

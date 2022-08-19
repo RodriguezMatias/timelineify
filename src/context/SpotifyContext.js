@@ -10,7 +10,7 @@ const StompClientContext = React.createContext(null);
 export default StompClientContext;
 
 export function SpotifyContextProvider({ children }) {
-    const clientId = "7db92e56e9244449b3eebc16f40ad031";
+    const clientId = "e75191809a40495181071760cf7567da";
     const redirectUri = `${window.location.protocol}//${window.location.host}/auth`;
     const scope = "playlist-modify-public";
     const history = useHistory();
@@ -163,7 +163,7 @@ export function SpotifyContextProvider({ children }) {
         }
     }
 
-    const createSpotifyPlaylist = async (tracks, playlistName, description) => {
+    const createSpotifyPlaylist = async (tracks, playlistName, description,filter) => {
         setCreatingPlaylist(true);
         umami('create-playlist');
 
@@ -178,7 +178,9 @@ export function SpotifyContextProvider({ children }) {
             // Add all tracks to the playlist in batches of 100
             let trackBatch = [];
             for (const track of tracks) {
-                trackBatch.push(track.uri);
+                if(track.albumMetadata.name.includes(filter) || track.name.includes(filter)){
+                    trackBatch.push(track.uri);
+                }
                 if (trackBatch.length >= 100) {
                     await connection.current.post(`https://api.spotify.com/v1/playlists/${newPlaylist.id}/tracks`, {
                         uris: trackBatch
